@@ -48,17 +48,17 @@ void GameScene::Update() {
 //	position.y += 1.0f;
 //	sprite_->SetPosition(position);
 
-	/*if (input_->TriggerKey(DIK_SPACE)) {
+	if (input_->TriggerKey(DIK_SPACE)) {
 		audio_->StopWave(voiceHandle_);
-	}*/
+	}
 
-	//#ifdef _DEBUG
-	//ImGui::Begin("Debug1");
-	//ImGui::InputFloat3("InputFloat3", inputFloat3);
-	//ImGui::SliderFloat3("SliderFloat3", inputFloat3, 0.0f, 1.0f);
-	//ImGui::ShowDemoWindow();
-	//ImGui::End();
-	//#endif
+	#ifdef _DEBUG
+	ImGui::Begin("Debug1");
+	ImGui::InputFloat3("InputFloat3", inputFloat3);
+	ImGui::SliderFloat3("SliderFloat3", inputFloat3, 0.0f, 1.0f);
+	ImGui::ShowDemoWindow();
+	ImGui::End();
+	#endif
 	debugCamera_->Update();
 }
 
@@ -96,8 +96,8 @@ void GameScene::Draw() {
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 
-	/*PrimitiveDrawer::GetInstance()->DrawLine3d({ 0,0,0 }, { 0,10,0 }, { 1.0f,0.0f,0.0f,1.0f });
-	PrimitiveDrawer::GetInstance()->DrawLine3d({ 0,0,0 }, { 10,0,0 }, { 1.0f,0.0f,0.0f,1.0f });*/
+	PrimitiveDrawer::GetInstance()->DrawLine3d({ 0,0,0 }, { 0,10,0 }, { 1.0f,0.0f,0.0f,1.0f });
+	PrimitiveDrawer::GetInstance()->DrawLine3d({ 0,0,0 }, { 10,0,0 }, { 1.0f,0.0f,0.0f,1.0f });
 
 #pragma endregion
 
