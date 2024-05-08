@@ -5,11 +5,10 @@
 class Player {
 public:
 	public: 
-	void Initialize();
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model,uint32_t textureHandle,ViewProjection*viewProjection);
+	void Initialize(Model* model,uint32_t textureHandle,ViewProjection* viewProjection);
 
 	/// <summary>
 	/// 毎フレーム処理
