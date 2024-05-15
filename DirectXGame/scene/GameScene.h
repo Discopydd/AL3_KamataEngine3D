@@ -7,7 +7,8 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-
+#include<vector>
+#include"DebugCamera.h"
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -43,7 +44,12 @@ private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
-
+	std::vector<std::vector<WorldTransform*>>worldTransformBlocks_;
+	Model* modelBlock_ = nullptr;
+	WorldTransform worldTransform_;
+	ViewProjection viewProjection_;
+	bool isDebugCamerActive_ = false;
+	DebugCamera* debugcamer_ = nullptr;
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
