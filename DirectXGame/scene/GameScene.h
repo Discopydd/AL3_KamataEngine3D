@@ -11,6 +11,7 @@
 #include "WorldTransform.h"
 #include <vector>
 #include"Player.h"
+#include"MapChipField.h"
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -50,25 +51,17 @@ private: // メンバ変数
 	// 自分の変数
 	ViewProjection viewProjection_;
 	Model* model_ = nullptr;
-	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
+	
 	bool _isDebugCameraActrive = false;
 	DebugCamera* debugCamera_ = nullptr;
 	Skydome* skydomeObj_ = nullptr;
 	// Player
 	Player* player_ = nullptr;
 
-	int _mapChip[10][20] = {
-	    {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-        {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-        {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-	    {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-        {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-        {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-	    {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-        {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-        {2, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-	    {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0}
-    };
+	//Map
+	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
+	MapChipField* mapChipField_;
+	void GenerateBlocks();
 
 	/// <summary>
 	/// ゲームシーン用

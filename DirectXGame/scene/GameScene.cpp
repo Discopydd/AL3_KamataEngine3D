@@ -1,7 +1,27 @@
 #include "GameScene.h"
 #include "TextureManager.h"
 #include <cassert>
-
+void GameScene::GenerateBlocks() {
+	// ブロックを初期化
+	const uint32_t kNumBlockHorizontal = MapChipField::kNumBlockHorizontal;
+	const uint32_t kNumBlockVertical = MapChipField::kNumBlockVirtical;
+	worldTransformBlocks_.resize(kNumBlockVertical);
+	for (uint32_t i = 0; i < kNumBlockVertical; i++) {
+		worldTransformBlocks_[i].resize(kNumBlockHorizontal);
+	}
+	// ブロック生成
+for (uint32_t i = 0; i < kNumBlockVertical; i++) {
+		for (uint32_t j = 0; j < kNumBlockHorizontal; j++) {
+			switch (mapChipField_->GetMapChipTypeByIndex(j, i)) {
+			case MapChipType::kBlock:
+				worldTransformBlocks_[i][j] = new WorldTransform();
+				worldTransformBlocks_[i][j]->Initialize();
+				worldTransformBlocks_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
+				break;
+			}
+		}
+	}
+}
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
@@ -9,6 +29,7 @@ GameScene::~GameScene() {
 	delete debugCamera_;
 	delete skydomeObj_;
 	delete player_;
+	delete mapChipField_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -28,35 +49,15 @@ void GameScene::Initialize() {
 	debugCamera_ = new DebugCamera(WinApp::kWindowWidth, WinApp::kWindowHeight);
 	skydomeObj_ = new Skydome();
 	skydomeObj_->Initialize(&viewProjection_);
-
+	//Player
 	player_ = new Player();
-	 player_->Initialize(model_,&viewProjection_);
-
-	
-	const uint32_t kNumBlockHorizontal = 20;
-	const uint32_t kNumBlockVertical = 10;
-	const float kBlockWidth = 2.f;
-	const float kBlockHeight = 2.f;
-	worldTransformBlocks_.resize(kNumBlockVertical);
-	for (uint32_t i = 0; i < kNumBlockVertical; i++) {
-		worldTransformBlocks_[i].resize(kNumBlockHorizontal);
-	}
-	for (uint32_t i = 0; i < kNumBlockVertical; i++) {
-		for (uint32_t j = 0; j < kNumBlockHorizontal; j++) {
-			switch (_mapChip[i][j]) {
-			case 1:
-				worldTransformBlocks_[i][j] = new WorldTransform();
-				worldTransformBlocks_[i][j]->Initialize();
-				worldTransformBlocks_[i][j]->translation_.x = kBlockWidth * j;
-				worldTransformBlocks_[i][j]->translation_.y = kBlockHeight * (kNumBlockVertical - i);
-				break;
-			case 2:
-				player_->worldTransform_.translation_.x = kBlockWidth * j;
-				player_->worldTransform_.translation_.y = kBlockHeight * (kNumBlockVertical - i);
-				break;
-			}
-		}
-	}
+	Vector3 playerPos = mapChipField_->GetMapChipPositionByIndex(1, 18);
+	 player_->Initialize(model_,&viewProjection_,playerPos);
+	 
+	 //Map
+	 mapChipField_ = new MapChipField;
+	 mapChipField_->LoadMapChipCsv("Resources/map.csv");
+	 GenerateBlocks();
 }
 
 void GameScene::Update() {

@@ -9,7 +9,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model,ViewProjection* viewProjection);
+	void Initialize(Model* model,ViewProjection* viewProjection, const Vector3& position);
 
 	/// <summary>
 	/// 毎フレーム処理

@@ -1,15 +1,15 @@
 #include "Skydome.h"
 
-Skydome::~Skydome() { delete _model; }
+Skydome::~Skydome() { delete model_; }
 
 void Skydome::Initialize(ViewProjection* view) {
-	_worldTransform.Initialize();
-	_viewProjection = view;
-	_model = Model::CreateFromOBJ("Skydome", true);
+	worldTransform_.Initialize();
+	viewProjection_ = view;
+	model_ = Model::CreateFromOBJ("Skydome", true);
 
-	_worldTransform.scale_ = {100, 100, 100};
+	worldTransform_.scale_ = { 250, 250, 250 };
 }
 
-void Skydome::Update() { _worldTransform.UpdateMatrix(); }
+void Skydome::Update() { worldTransform_.UpdateMatrix(); }
 
-void Skydome::Draw() { _model->Draw(_worldTransform, *_viewProjection); }
+void Skydome::Draw() { model_->Draw(worldTransform_, *viewProjection_); }

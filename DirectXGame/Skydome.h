@@ -7,9 +7,9 @@
 /// </summary>
 class Skydome {
 private:
-	WorldTransform _worldTransform;
-	ViewProjection* _viewProjection = nullptr;
-	Model* _model = nullptr;
+	WorldTransform worldTransform_;
+	ViewProjection* viewProjection_ = nullptr;
+	Model* model_ = nullptr;
 
 public:
 	~Skydome();
