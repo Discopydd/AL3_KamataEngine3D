@@ -49,7 +49,7 @@ void Player::Update()
 	if (!isJump_) {
 		if (Input::GetInstance()->PushKey(DIK_UP)) {
 			isJump_ = true;
-			isGround_ = false;
+			onGround_ = false;
 			velocity_ += Vector3(0, kJumpAcceleration_, 0);
 		}
 	} else {
@@ -59,7 +59,7 @@ void Player::Update()
 	if (velocity_.y < 0) {
 		if (worldTransform_.translation_.y <= 2) {
 			isJump_ = false;
-			isGround_ = true;
+			onGround_ = true;
 			worldTransform_.translation_.y = 2;
 			velocity_.y = 0;
 		}

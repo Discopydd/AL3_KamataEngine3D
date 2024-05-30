@@ -47,7 +47,7 @@ private:
 	const int turnEndFrame_ = 10;
 
 	bool isJump_ = false;
-	bool isGround_ = true;
+	bool onGround_ = true;
 	const float kGravityAcceleration_ = 0.05f;
 	const float kLimitFallSpeed_ = 0.4f;
 	const float kJumpAcceleration_ = 1.0f;
