@@ -39,7 +39,7 @@ void Player::Update()
 			}
 			acceleration.x -= kAttenuation;
 		}
-
+		
 		velocity_ += acceleration;
 		velocity_.x = std::clamp(velocity_.x, -kLimitRunSpeed, kLimitRunSpeed);
 	} else {

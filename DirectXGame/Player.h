@@ -37,8 +37,8 @@ private:
 	const float kLimitRunSpeed = 0.4f; // 最大速度
 
 	enum class LRDirection {
-		kRight,
-		kLeft,
+		kRight,//右
+		kLeft,//左
 	};
 	LRDirection lrDirection_ = LRDirection::kRight;
 	float turnStartRotationY_ = 0;
