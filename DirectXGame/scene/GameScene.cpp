@@ -1,6 +1,4 @@
 #include "GameScene.h"
-#include "TextureManager.h"
-#include <cassert>
 void GameScene::GenerateBlocks() {
 	// ブロックを初期化
 	const uint32_t kNumBlockHorizontal = MapChipField::kNumBlockHorizontal;
@@ -30,6 +28,7 @@ GameScene::~GameScene() {
 	delete skydomeObj_;
 	delete player_;
 	delete mapChipField_;
+	delete cameraController_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -52,27 +51,39 @@ void GameScene::Initialize() {
 	//Player
 	player_ = new Player();
 	Vector3 playerPos = mapChipField_->GetMapChipPositionByIndex(1, 18);
-	 player_->Initialize(model_,&viewProjection_,playerPos);
-	 
+	 player_->Initialize(&viewProjection_,playerPos);
+
 	 //Map
 	 mapChipField_ = new MapChipField;
 	 mapChipField_->LoadMapChipCsv("Resources/map.csv");
 	 GenerateBlocks();
+
+	  // CameraControll
+	cameraController_ = new CameraController;
+	cameraController_->Initialize();
+	cameraController_->SetTarget(player_); // 追従したいターゲット
+	cameraController_->Reset();               // 最初のカメラの位置を追従してるターゲットに設定していく
+	Vector3 mapMaxArea = mapChipField_->GetMapChipPositionByIndex(mapChipField_->kNumBlockHorizontal, 0);
+	Rect cameraArea = {35, mapMaxArea.x - 37, mapMaxArea.y - 19, 19};
+	cameraController_->SetMovableArea(cameraArea);
 }
 
 void GameScene::Update() {
 #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_SPACE)) {
-		_isDebugCameraActrive = !_isDebugCameraActrive;
+		isDebugCameraActrive_ = !isDebugCameraActrive_;
 	}
 #endif // _DEBUG
-	if (_isDebugCameraActrive) {
+	if (isDebugCameraActrive_) {
 		debugCamera_->Update();
 		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
 		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
 		viewProjection_.TransferMatrix();
 	} else {
-		viewProjection_.UpdateMatrix();
+		cameraController_->Update();
+		viewProjection_.matView = cameraController_->GetViewProjection().matView;
+		viewProjection_.matProjection = cameraController_->GetViewProjection().matProjection;
+		viewProjection_.TransferMatrix();
 	}
 
 	// Block
@@ -86,6 +97,7 @@ void GameScene::Update() {
 	// Obj
 	skydomeObj_->Update();
 	player_->Update();
+	
 }
 
 void GameScene::Draw() {

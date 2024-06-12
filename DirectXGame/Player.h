@@ -13,7 +13,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model,ViewProjection* viewProjection, const Vector3& position);
+	void Initialize(ViewProjection* viewProjection, const Vector3& position);
 
 	/// <summary>
 	/// 毎フレーム処理
@@ -25,7 +25,9 @@ public:
 	/// </summary>
 	void Draw();
 	
-	
+	const WorldTransform& GetWorldTransform() { return worldTransform_; };
+
+	const Vector3& GetVelocity() const { return velocity_; };
 private:
 	ViewProjection* viewProjection_ = nullptr;
 	WorldTransform worldTransform_;

@@ -1,17 +1,19 @@
 #pragma once
-
+#include "TextureManager.h"
+#include <cassert>
 #include "Audio.h"
 #include "DebugCamera.h"
 #include "DirectXCommon.h"
 #include "Input.h"
 #include "Model.h"
-#include "Skydome.h"
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include <vector>
 #include"Player.h"
 #include"MapChipField.h"
+#include "CameraController.h"
+#include "Skydome.h"
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -51,9 +53,10 @@ private: // メンバ変数
 	// 自分の変数
 	ViewProjection viewProjection_;
 	Model* model_ = nullptr;
-	
-	bool _isDebugCameraActrive = false;
+	//DebugCamera
+	bool isDebugCameraActrive_ = false;
 	DebugCamera* debugCamera_ = nullptr;
+	// Skydome
 	Skydome* skydomeObj_ = nullptr;
 	// Player
 	Player* player_ = nullptr;
@@ -62,7 +65,8 @@ private: // メンバ変数
 	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
 	MapChipField* mapChipField_;
 	void GenerateBlocks();
-
+	// CameraController
+	CameraController* cameraController_ = nullptr; 
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
