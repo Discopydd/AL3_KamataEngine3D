@@ -27,7 +27,6 @@ GameScene::~GameScene() {
 	delete debugCamera_;
 	delete skydomeObj_;
 	delete player_;
-	delete mapChipField_;
 	delete cameraController_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
@@ -35,6 +34,7 @@ GameScene::~GameScene() {
 		}
 	}
 	worldTransformBlocks_.clear();
+		delete mapChipField_;
 }
 
 void GameScene::Initialize() {
@@ -48,15 +48,17 @@ void GameScene::Initialize() {
 	debugCamera_ = new DebugCamera(WinApp::kWindowWidth, WinApp::kWindowHeight);
 	skydomeObj_ = new Skydome();
 	skydomeObj_->Initialize(&viewProjection_);
-	//Player
-	player_ = new Player();
-	Vector3 playerPos = mapChipField_->GetMapChipPositionByIndex(1, 18);
-	 player_->Initialize(&viewProjection_,playerPos);
 
 	 //Map
 	 mapChipField_ = new MapChipField;
 	 mapChipField_->LoadMapChipCsv("Resources/map.csv");
 	 GenerateBlocks();
+
+	 //Player
+	player_ = new Player();
+	Vector3 playerPos = mapChipField_->GetMapChipPositionByIndex(1, 18);
+	 player_->Initialize(&viewProjection_,playerPos);
+	 player_->SetMapChipField(mapChipField_);
 
 	  // CameraControll
 	cameraController_ = new CameraController;

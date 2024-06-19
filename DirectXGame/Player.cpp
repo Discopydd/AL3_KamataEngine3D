@@ -1,5 +1,6 @@
 #include "Player.h"
 
+
 Player::~Player() {}
 
 void Player::Initialize(ViewProjection*viewProjection, const Vector3& position)
@@ -12,6 +13,7 @@ void Player::Initialize(ViewProjection*viewProjection, const Vector3& position)
 }
 
 void Player::Update() {
+    #pragma region 1.移動入力
     // 右キーまたは左キーが押されたかどうかをチェックする
     if (Input::GetInstance()->PushKey(DIK_RIGHT) || Input::GetInstance()->PushKey(DIK_LEFT)) {
         Vector3 acceleration{};
@@ -71,7 +73,7 @@ void Player::Update() {
         // 落下速度を制限する
         velocity_.y = max(velocity_.y, -kLimitFallSpeed_);
     }
-
+   
     // 着地の処理
     if (velocity_.y < 0) {
         // プレイヤーが地面に接触したかどうかをチェックする
@@ -82,18 +84,30 @@ void Player::Update() {
             velocity_.y = 0;
         }
     }
+    #pragma endregion
 
-    // 位置を更新する
-    worldTransform_.translation_ += velocity_;
+    // 2.移動量を加味して衝突判定する
+	CollisionMapInfo collisionMapInfo;
+	collisionMapInfo.move = velocity_;
+	MapCollision(collisionMapInfo);
 
-    // 回転アニメーションの処理
+    // 3.判定結果を反映して移動させる
+    worldTransform_.translation_ += collisionMapInfo.move;
+
+    // 4.天井に接触している場合の処理
+	if (collisionMapInfo.ceiling) {
+		DebugText::GetInstance()->ConsolePrintf("hit ceiling\n");
+		velocity_.y = 0;
+	}
+
+    // 7.回転アニメーションの処理
     if (turnNowFram_ >= 1 && turnNowFram_ < turnEndFrame_) {
         turnNowFram_++;
         float easing = powf(float(turnNowFram_) / float(turnEndFrame_), 3);
         worldTransform_.rotation_.y = turnUseRotationY_ * easing + turnStartRotationY_;
     }
 
-    // ワールド変換行列を更新する
+    // 8.ワールド変換行列を更新する
     worldTransform_.UpdateMatrix();
 }
 
@@ -101,4 +115,55 @@ void Player::Update() {
 void Player::Draw()
 {
 	model_->Draw(worldTransform_, *viewProjection_);
+}
+
+void Player::MapCollision(CollisionMapInfo& info) { MapCollision_Up(info); }
+void Player::MapCollision_Up(CollisionMapInfo& info)
+{
+#pragma region マップ衝突判定上方向
+    // 移動後の４つ角の座標
+	std ::array<Vector3, static_cast<int>(kNumCorner)> positionsNew{};
+	for (uint32_t i = 0; i < positionsNew.size(); ++i) {
+		positionsNew[i] = CornerPosition(worldTransform_.translation_ + info.move, static_cast<Corner>(i));
+	}
+    // もし上に移動してないなら、判断の必要がない
+	if (info.move.y <= 0)
+		return;
+    bool hit = false;
+	MapChipField::IndexSet indexSet{};
+	MapChipType mapChipType{};
+	// 左上
+	indexSet = mapChipField_->GetMapChipIndexByPosition(positionsNew[kLeftTop]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		hit = true;
+	}
+	// 右上
+	indexSet = mapChipField_->GetMapChipIndexByPosition(positionsNew[kRightTop]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		hit = true;
+	}
+    if (hit) {
+		// めり込みを排除する方向に移動量を設定する
+		indexSet = mapChipField_->GetMapChipIndexByPosition(positionsNew[kLeftTop]);
+		// めり込み先ブロックの範囲矩形
+		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
+		float moveY = rect.bottom - positionsNew[kLeftTop].y - kHeight / 2 + kBlank;
+		info.move.y = max(0.0f, moveY);
+		// 天井に当たったことを記録する
+		info.ceiling = true;
+	}
+    #pragma endregion
+}
+
+Vector3 Player::CornerPosition(const Vector3& center, Corner corner)
+{
+    Vector3 offsetTable[kNumCorner] = {
+   {+kWidth / 2.0f, -kHeight / 2.0f, 0.0f},  // kRightBottom
+   {-kWidth / 2.0f, -kHeight / 2.0f, 0.0f},  // kLeftBottom
+   {+kWidth / 2.0f, +kHeight / 2.0f, 0.0f},  // kRightTop
+   {-kWidth / 2.0f, +kHeight / 2.0f, 0.0f}   // kLeftTop
+    };
+    return center + offsetTable[static_cast<uint32_t>(corner)];
 }

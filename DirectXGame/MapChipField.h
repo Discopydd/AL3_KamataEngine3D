@@ -15,7 +15,6 @@ enum class MapChipType {
 struct MapChipData {
 	std::vector<std::vector<MapChipType>> data;
 };
-
 class MapChipField {
 
 	MapChipData mapChipData_;
@@ -32,4 +31,16 @@ public:
 	void LoadMapChipCsv(const std::string& filePath);
 	MapChipType GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex);
 	Vector3 GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex);
+	struct IndexSet {
+	uint32_t xIndex;
+	uint32_t yIndex;
+};
+	IndexSet GetMapChipIndexByPosition(const Vector3& position);
+	struct Rect {
+		float left;
+		float right;
+		float bottom;
+		float top;
+	};
+	Rect GetRectByIndex(uint32_t xIndex, uint32_t yIndex);
 };
