@@ -35,18 +35,21 @@ private:
 	const float kGravityAcceleration_ = 0.05f;
 	const float kLimitFallSpeed_ = 0.4f;
 	const float kJumpAcceleration_ = 1.0f;
+
+	const float kAttenuationLanding = 0.01f;
+	const float kAccelerationWall = 0.01f;
 	//mapの判定変数
 	MapChipField* mapChipField_ = nullptr;
 	//キャラクターの当たり判定サイズ
-	static inline const float kWidth = 2.0f;
-	static inline const float kHeight = 2.0f;
+	static inline const float kWidth = 0.8f;
+	static inline const float kHeight = 0.8f;
 
 	static inline const float kBlank = 0.1f;
 	// マップと当たり情報
 	struct CollisionMapInfo {
 		bool ceiling = false;
-		bool isGround = false;
-		bool isWall = false;
+		bool landing = false;
+		bool hitWall = false;
 		Vector3 move{};
 	};
 	//角
@@ -64,6 +67,17 @@ private:
 	void MapCollision(CollisionMapInfo& info);
 
 	void MapCollision_Up(CollisionMapInfo& info);
+
+	void MapCollision_Down(CollisionMapInfo& info);
+
+	void MapCollision_Left(CollisionMapInfo& info);
+
+	void MapCollision_Right(CollisionMapInfo& info);
+
+	void MapCollision_isGroundChange(const CollisionMapInfo& info);
+
+	void CorrectPositionAfterJump();
+
 	public: 
 	~Player();
 	/// <summary>
