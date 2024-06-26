@@ -27,6 +27,7 @@ GameScene::~GameScene() {
 	delete debugCamera_;
 	delete skydomeObj_;
 	delete player_;
+	delete enemy_;
 	delete cameraController_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
@@ -59,6 +60,11 @@ void GameScene::Initialize() {
 	Vector3 playerPos = mapChipField_->GetMapChipPositionByIndex(1, 18);
 	 player_->Initialize(&viewProjection_,playerPos);
 	 player_->SetMapChipField(mapChipField_);
+
+	 //敵
+	enemy_ = new Enemy();
+	Vector3 enemyPos = mapChipField_->GetMapChipPositionByIndex(10, 18);
+	 enemy_->Initialize(&viewProjection_,enemyPos);
 
 	  // CameraControll
 	cameraController_ = new CameraController;
@@ -99,6 +105,7 @@ void GameScene::Update() {
 	// Obj
 	skydomeObj_->Update();
 	player_->Update();
+	enemy_->Update();
 	
 }
 
@@ -138,7 +145,7 @@ void GameScene::Draw() {
 	}
 	skydomeObj_->Draw();
 	player_->Draw();
-
+	enemy_->Draw();
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

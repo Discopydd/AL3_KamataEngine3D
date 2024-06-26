@@ -14,6 +14,7 @@
 #include"MapChipField.h"
 #include "CameraController.h"
 #include "Skydome.h"
+#include "Enemy.h"
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -60,7 +61,8 @@ private: // メンバ変数
 	Skydome* skydomeObj_ = nullptr;
 	// Player
 	Player* player_ = nullptr;
-
+	//敵
+	Enemy* enemy_ = nullptr;
 	//Map
 	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
 	MapChipField* mapChipField_;
