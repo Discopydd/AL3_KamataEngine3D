@@ -19,9 +19,9 @@ private:
 	// 補講の速さ
 	static inline const float kWalkSpeed = 0.03f;
 	//最初の角度[度]
-	static inline const float kWalkMotionAngleStart = 5.0f;
+	static inline const float kWalkMotionAngleStart = 10.0f;
 	//最後の角度[度]
-	static inline const float kWalkMotionAngleEnd = -5.0f;
+	static inline const float kWalkMotionAngleEnd = -40.0f;
 	//アニメーションの周期となる時間[秒]
 	static inline const float kWalklMotionTime = 1.0f;
 	//経過時間

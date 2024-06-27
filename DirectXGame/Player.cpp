@@ -79,7 +79,7 @@ void Player::Update() {
 			// 下方向速度をリセット
 			velocity_.y = 0.0f;
 			// 接地状態に移行
-			onGround_ = true;
+			onGround_ = true; 
               isJump_ = false; 
         landing = false;
 		}
