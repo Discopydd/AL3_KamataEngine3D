@@ -27,7 +27,10 @@ GameScene::~GameScene() {
 	delete debugCamera_;
 	delete skydomeObj_;
 	delete player_;
-	delete enemy_;
+	 for (Enemy* enemy : enemies_) {
+        delete enemy;
+    }
+    enemies_.clear();
 	delete cameraController_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
@@ -62,9 +65,13 @@ void GameScene::Initialize() {
 	 player_->SetMapChipField(mapChipField_);
 
 	 //敵
-	enemy_ = new Enemy();
-	Vector3 enemyPos = mapChipField_->GetMapChipPositionByIndex(10, 18);
-	 enemy_->Initialize(&viewProjection_,enemyPos);
+	for (int32_t i = 0; i < enemyCount; ++i) {
+    Enemy* newEnemy = new Enemy();
+    Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(10, 18-i);
+    newEnemy->Initialize(&viewProjection_, enemyPosition);
+    enemies_.push_back(newEnemy);
+}
+
 
 	  // CameraControll
 	cameraController_ = new CameraController;
@@ -102,11 +109,13 @@ void GameScene::Update() {
 			worldTransformBlock->UpdateMatrix();
 		}
 	}
+	CheckAllCollisions();
 	// Obj
 	skydomeObj_->Update();
 	player_->Update();
-	enemy_->Update();
-	
+	 for (Enemy* enemy : enemies_) {
+        enemy->Update();
+    }
 }
 
 void GameScene::Draw() {
@@ -145,7 +154,9 @@ void GameScene::Draw() {
 	}
 	skydomeObj_->Draw();
 	player_->Draw();
-	enemy_->Draw();
+	 for (Enemy* enemy : enemies_) {
+        enemy->Draw();
+    }
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
@@ -163,4 +174,24 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+
+void GameScene::CheckAllCollisions()
+{
+	#pragma region 自キャラと敵キャラの当たり判定
+	//判定対象1と2の座標
+	AABB aabb1,aabb2;
+	//自キャラの座標
+    aabb1 = player_->GetAABB();
+	//自キャラと敵弾全ての当たり判定
+	for (Enemy* enemy : enemies_) {
+		///敵弾の座標
+		aabb2 = enemy->GetAABB();
+		if (IsCollision(aabb1, aabb2)) {
+			//自キャラの衝突時コールバックを呼び出す
+			player_->OnCollision(enemy);
+			enemy->OnCollision(player_);
+		}
+	}
+	#pragma endregion
 }

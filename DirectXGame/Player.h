@@ -8,7 +8,9 @@
 #include <cassert>
 #include <algorithm>
 #include <cmath>
+#include "MyMath.h"
 class MapChipField;
+class Enemy;
 class Player {
 private:
 	ViewProjection* viewProjection_ = nullptr;
@@ -33,12 +35,11 @@ private:
 	bool onGround_ = true;
 	bool isJump_ = false;
 
-	bool landing = false;
 	const float kGravityAcceleration_ = 0.05f;
 	const float kLimitFallSpeed_ = 0.4f;
 	const float kJumpAcceleration_ = 1.0f;
 
-	const float kAttenuationLanding = 0.1f;
+	const float kAttenuationLanding = 0.05f;
 	const float kAccelerationWall = 0.06f;
 	//mapの判定変数
 	MapChipField* mapChipField_ = nullptr;
@@ -46,7 +47,7 @@ private:
 	static inline const float kWidth = 2.0f;
 	static inline const float kHeight = 2.0f;
 
-	static inline const float kBlank = 0.1f;
+	static inline const float kBlank = 0.01f;
 	// マップと当たり情報
 	struct CollisionMapInfo {
 		bool ceiling = false;
@@ -78,6 +79,9 @@ private:
 
 	void MapCollision_isGroundChange(const CollisionMapInfo& info);
 
+	//ワールド座標を取得
+	Vector3 GetWorldPosition();
+
 
 	public: 
 	~Player();
@@ -102,5 +106,9 @@ private:
 
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; };
 
-	
+	//AABBを取得
+	AABB GetAABB();
+
+	//衝突応答
+	void OnCollision(const Enemy* enemy);
 };

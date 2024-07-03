@@ -1,5 +1,7 @@
 #include"MyMath.h"
 
+
+
 Matrix4x4 Multiply(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
     Matrix4x4 result;
     result.m[0][0] = matrix1.m[0][0] * matrix2.m[0][0] + matrix1.m[0][1] * matrix2.m[1][0] +
@@ -74,4 +76,14 @@ Matrix4x4 MakeAffineMatrix(Vector3 scale, Vector3 rotation, Vector3 translation)
 	mTranslation.m[3][2] = translation.z;
 
 	return Multiply(mScale, Multiply(mRotation, mTranslation));
+}
+
+bool IsCollision(const AABB& aabb1, const AABB& aabb2) {
+	if ((aabb1.min.x <= aabb2.max.x && aabb1.max.x >= aabb2.min.x) && // x
+	    (aabb1.min.y <= aabb2.max.y && aabb1.max.y >= aabb2.min.y) && // y
+	    (aabb1.min.z <= aabb2.max.z && aabb1.max.z >= aabb2.min.z)) { // z
+		return true;
+	} else {
+		return false;
+	}
 }

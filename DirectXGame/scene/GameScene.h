@@ -15,6 +15,7 @@
 #include "CameraController.h"
 #include "Skydome.h"
 #include "Enemy.h"
+#include <imgui.h>
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -46,6 +47,9 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+    //全ての当たり判定を行う
+	void CheckAllCollisions();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -62,13 +66,15 @@ private: // メンバ変数
 	// Player
 	Player* player_ = nullptr;
 	//敵
-	Enemy* enemy_ = nullptr;
+	std::list<Enemy*>enemies_;
+	int32_t enemyCount = 1;
 	//Map
 	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
 	MapChipField* mapChipField_;
 	void GenerateBlocks();
 	// CameraController
 	CameraController* cameraController_ = nullptr; 
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

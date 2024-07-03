@@ -3,18 +3,12 @@
 #include "Vector3.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include "MyMath.h"
 /// <summary>
 /// 敵
 /// </summary>
+class Player;
 class Enemy {
-public:
-
-	void Initialize( ViewProjection* viewProjection, const Vector3& position);
-
-	void Update();
-
-	void Draw();
-
 private:
 	// 補講の速さ
 	static inline const float kWalkSpeed = 0.03f;
@@ -27,12 +21,33 @@ private:
 	//経過時間
 	float walkTimer_ = 0.0f;
 
-	
+	static inline const float kWidth = 2.0f;
+	static inline const float kHeight = 2.0f;
+
+
 	Vector3 velocity_ = {};
-	
+
 	WorldTransform worldTransform_;
-	
+
 	Model* model_ = nullptr;
-	
+
 	ViewProjection* viewProjection_ = nullptr;
+
+public:
+
+	void Initialize(ViewProjection* viewProjection, const Vector3& position);
+
+	void Update();
+
+	void Draw();
+
+	//AABBを取得
+	AABB GetAABB();
+
+	// ワールド座標を取得
+	Vector3 GetWorldPosition();
+
+	//衝突応答
+	void OnCollision(const Player* player);
+
 };
