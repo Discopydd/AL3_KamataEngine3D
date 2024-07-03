@@ -3,6 +3,7 @@
 
 
 
+
 AABB Player::GetAABB()
 {
     Vector3 worldPos = GetWorldPosition();
@@ -123,7 +124,10 @@ void Player::Update() {
     // 8.ワールド変換行列を更新する
     worldTransform_.UpdateMatrix();
 
-
+    ImGui::Begin("A");
+	ImGui::SliderFloat3("velocity", &velocity_.x, 0.0f, 1.0f);
+	ImGui::Checkbox("onGround_", &onGround_);
+	ImGui::End();
 }
 
 
@@ -204,7 +208,7 @@ void Player::MapCollision_Down(CollisionMapInfo& info)
         indexSet = mapChipField_->GetMapChipIndexByPosition(CornerPosition(worldTransform_.translation_ + info.move, kLeftBottom));
         MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
         float moveY = rect.top - CornerPosition(worldTransform_.translation_ + info.move, kLeftBottom).y + kHeight / 2 - kBlank;
-        info.move.y = max(0.0f, moveY);
+        info.move.y = min(0.0f, moveY);
         info.landing = true;
     }
 }
@@ -236,8 +240,8 @@ void Player::MapCollision_Left(CollisionMapInfo& info)
         // 排除左方向的穿透
         indexSet = mapChipField_->GetMapChipIndexByPosition(CornerPosition(worldTransform_.translation_ + info.move, kLeftBottom));
         MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
-        float moveX = rect.right - CornerPosition(worldTransform_.translation_ + info.move, kLeftBottom).x + kWidth / 2 - kBlank;
-        info.move.x = min(0.0f, moveX);
+        float moveX = rect.right - worldTransform_.translation_.x - (kWidth / 2.0f + kBlank);
+        info.move.x = max(0.0f, moveX);
         info.hitWall = true;
     }
 }
@@ -269,8 +273,8 @@ void Player::MapCollision_Right(CollisionMapInfo& info)
         // 排除右方向的穿透
         indexSet = mapChipField_->GetMapChipIndexByPosition(CornerPosition(worldTransform_.translation_ + info.move, kRightBottom));
         MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
-        float moveX = rect.left - CornerPosition(worldTransform_.translation_ + info.move, kRightBottom).x - kWidth / 2 + kBlank;
-        info.move.x = max(0.0f, moveX);
+        float moveX = rect.left - worldTransform_.translation_.x + (kWidth / 2.0f + kBlank);
+        info.move.x = min(0.0f, moveX);
         info.hitWall = true;
     }
 }
