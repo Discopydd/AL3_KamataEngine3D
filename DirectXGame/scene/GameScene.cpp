@@ -39,6 +39,7 @@ GameScene::~GameScene() {
 	}
 	worldTransformBlocks_.clear();
 		delete mapChipField_;
+		delete deathParticles_;
 }
 
 void GameScene::Initialize() {
@@ -71,7 +72,9 @@ void GameScene::Initialize() {
     newEnemy->Initialize(&viewProjection_, enemyPosition);
     enemies_.push_back(newEnemy);
 }
-
+	// Particles
+	deathParticles_ = new DeathParticles();
+	deathParticles_->Initalize(&viewProjection_, playerPos);
 
 	  // CameraControll
 	cameraController_ = new CameraController;
@@ -113,6 +116,10 @@ void GameScene::Update() {
 	// Obj
 	skydomeObj_->Update();
 	player_->Update();
+	// パーティクルの更新
+	if (deathParticles_) {
+		deathParticles_->Update();
+	}
 	 for (Enemy* enemy : enemies_) {
         enemy->Update();
     }
@@ -157,6 +164,10 @@ void GameScene::Draw() {
 	 for (Enemy* enemy : enemies_) {
         enemy->Draw();
     }
+	 //パーティクル描画
+	if (deathParticles_) {
+		deathParticles_->Draw();
+	}
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

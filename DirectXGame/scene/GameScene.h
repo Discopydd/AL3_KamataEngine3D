@@ -16,6 +16,7 @@
 #include "Skydome.h"
 #include "Enemy.h"
 #include <imgui.h>
+#include "DeathParticles.h"
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -75,6 +76,8 @@ private: // メンバ変数
 	// CameraController
 	CameraController* cameraController_ = nullptr; 
 
+	// Particles
+	DeathParticles* deathParticles_ = nullptr;
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
