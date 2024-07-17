@@ -50,7 +50,7 @@ Vector3 Enemy::GetWorldPosition()
 	return worldPos;
 }
 
-void Enemy::OnCollision(const Player* player)
+void Enemy::OnCollision(const bool flag)
 {
-	(void)player;
+	isPlayerHit = flag;
 }

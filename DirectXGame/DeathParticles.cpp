@@ -5,14 +5,13 @@ DeathParticles::~DeathParticles()
 	delete model_;
 }
 
-void DeathParticles::Initalize(ViewProjection* viewProjection, const Vector3& position)
+void DeathParticles::Initalize(ViewProjection* viewProjection)
 {
 	model_ = Model::CreateFromOBJ("deathParticle", true);
 	viewProjection_ = viewProjection;
 	for (auto& worldTransform : worldTransforms_) {
 		worldTransform.Initialize();
-		worldTransform.scale_ = {2.0f, 2.0f, 2.0f};
-		worldTransform.translation_ = position;
+		worldTransform.scale_ = { 2.0f, 2.0f, 2.0f };
 	}
 	objectColor_.Initialize();
 	color_ = {1, 1, 1, 1};
@@ -20,7 +19,7 @@ void DeathParticles::Initalize(ViewProjection* viewProjection, const Vector3& po
 
 void DeathParticles::Update()
 {
-	if (isFinished_) {
+	if (isFinished_|| !isStart) {
 		return;
 	}
 
@@ -38,14 +37,16 @@ void DeathParticles::Update()
 		worldTransforms_[i].translation_.y += velocity.y;
 	}
 	//カウンターを1フレーム分の秒数進める
-	counter_ += 1.0f / 60.0f;
+	
     //存続時間の上限に達したら
-	if (counter_ >= kDuration) {
-		counter_ = kDuration;
+	if (counter_ <= kDuration) {
+		counter_ += 1.0f / 60.0f;
+	}else{
 		//終了扱いにする
 		isFinished_ = true;
 	}
 	for (auto& worldTransform : worldTransforms_) {
+
 		worldTransform.UpdateMatrix();
 	}
 
@@ -58,10 +59,24 @@ void DeathParticles::Update()
 
 void DeathParticles::Draw()
 {
-	if (isFinished_) {
+	if (isFinished_|| !isStart) {
 		return;
 	}
 	for (auto& worldTransform : worldTransforms_) {
 		model_->Draw(worldTransform, *viewProjection_, &objectColor_);
 	}
+}
+
+void DeathParticles::SetStartPos(Vector3 pos)
+{
+	for (auto& worldTransform : worldTransforms_) {
+		worldTransform.translation_ = pos;
+	}
+}
+
+const bool DeathParticles::GetParticlesOver()
+{
+if (isFinished_)
+		return true;
+	return false;
 }

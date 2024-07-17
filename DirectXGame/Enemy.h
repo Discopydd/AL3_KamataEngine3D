@@ -24,6 +24,7 @@ private:
 	static inline const float kWidth = 2.0f;
 	static inline const float kHeight = 2.0f;
 
+	bool isPlayerHit = false;
 
 	Vector3 velocity_ = {};
 
@@ -48,6 +49,6 @@ public:
 	Vector3 GetWorldPosition();
 
 	//衝突応答
-	void OnCollision(const Player* player);
+	void OnCollision(const bool flag);
 
 };

@@ -5,7 +5,17 @@
 #include "ImGuiManager.h"
 #include "PrimitiveDrawer.h"
 #include "TextureManager.h"
+#include "TitleScene.h"
 #include "WinApp.h"
+
+
+enum class Scene {
+	kUnknown = 0,
+	kLoading,
+	kTitle,
+	kGame,
+};
+Scene scene = Scene::kUnknown;
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -17,6 +27,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	AxisIndicator* axisIndicator = nullptr;
 	PrimitiveDrawer* primitiveDrawer = nullptr;
 	GameScene* gameScene = nullptr;
+	TitleScene* titleScene = nullptr;
 
 	// ゲームウィンドウの作成
 	win = WinApp::GetInstance();
@@ -60,6 +71,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ゲームシーンの初期化
 	gameScene = new GameScene();
 	gameScene->Initialize();
+	scene = Scene::kLoading;
 
 	// メインループ
 	while (true) {
@@ -68,33 +80,84 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 		}
 
-		// ImGui受付開始
-		imguiManager->Begin();
-		// 入力関連の毎フレーム処理
-		input->Update();
-		// ゲームシーンの毎フレーム処理
-		gameScene->Update();
-		// 軸表示の更新
-		axisIndicator->Update();
-		// ImGui受付終了
-		imguiManager->End();
+		switch (scene) {
+		case Scene::kUnknown:
+			break;
+		case Scene::kLoading:
+			// ゲームシーンの初期化
+			delete gameScene;
+			delete titleScene;
+			gameScene = new GameScene();
+			gameScene->Initialize();
+			titleScene = new TitleScene();
+			titleScene->Initalize();
+			scene = Scene::kTitle;
+			break;
+		case Scene::kTitle:
+			// ImGui受付開始
+			imguiManager->Begin();
+			// 入力関連の毎フレーム処理
+			input->Update();
+			// ゲームシーンの毎フレーム処理
+			titleScene->Update();
+			// 軸表示の更新
+			axisIndicator->Update();
+			// ImGui受付終了
+			imguiManager->End();
 
-		// 描画開始
-		dxCommon->PreDraw();
-		// ゲームシーンの描画
-		gameScene->Draw();
-		// 軸表示の描画
-		axisIndicator->Draw();
-		// プリミティブ描画のリセット
-		primitiveDrawer->Reset();
-		// ImGui描画
-		imguiManager->Draw();
-		// 描画終了
-		dxCommon->PostDraw();
+			// 描画開始
+			dxCommon->PreDraw();
+			// ゲームシーンの描画
+			titleScene->Draw();
+			// 軸表示の描画
+			axisIndicator->Draw();
+			// プリミティブ描画のリセット
+			primitiveDrawer->Reset();
+			// ImGui描画
+			imguiManager->Draw();
+			// 描画終了
+			dxCommon->PostDraw();
+
+			// Scene Change
+			if (Input::GetInstance()->PushKey(DIK_SPACE))
+				scene = Scene::kGame;
+			break;
+		case Scene::kGame:
+			// ImGui受付開始
+			imguiManager->Begin();
+			// 入力関連の毎フレーム処理
+			input->Update();
+			// ゲームシーンの毎フレーム処理
+			gameScene->Update();
+			// 軸表示の更新
+			axisIndicator->Update();
+			// ImGui受付終了
+			imguiManager->End();
+
+			// 描画開始
+			dxCommon->PreDraw();
+			// ゲームシーンの描画
+			gameScene->Draw();
+			// 軸表示の描画
+			axisIndicator->Draw();
+			// プリミティブ描画のリセット
+			primitiveDrawer->Reset();
+			// ImGui描画
+			imguiManager->Draw();
+			// 描画終了
+			dxCommon->PostDraw();
+
+			// SceneChange
+			if (gameScene->isSceneOver)
+				scene = Scene::kLoading;
+			break;
+		}
 	}
 
 	// 各種解放
 	delete gameScene;
+
+	delete titleScene;
 	// 3Dモデル解放
 	Model::StaticFinalize();
 	audio->Finalize();

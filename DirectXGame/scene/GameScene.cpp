@@ -74,7 +74,7 @@ void GameScene::Initialize() {
 }
 	// Particles
 	deathParticles_ = new DeathParticles();
-	deathParticles_->Initalize(&viewProjection_, playerPos);
+	deathParticles_->Initalize(&viewProjection_);
 
 	  // CameraControll
 	cameraController_ = new CameraController;
@@ -123,6 +123,8 @@ void GameScene::Update() {
 	 for (Enemy* enemy : enemies_) {
         enemy->Update();
     }
+	 if (deathParticles_->GetParticlesOver())
+		isSceneOver = true;
 }
 
 void GameScene::Draw() {
@@ -188,7 +190,9 @@ void GameScene::Draw() {
 }
 
 void GameScene::CheckAllCollisions()
-{
+{ if (player_->GetDead()) {
+        return; 
+    }
 	#pragma region 自キャラと敵キャラの当たり判定
 	//判定対象1と2の座標
 	AABB aabb1,aabb2;
@@ -200,9 +204,12 @@ void GameScene::CheckAllCollisions()
 		aabb2 = enemy->GetAABB();
 		if (IsCollision(aabb1, aabb2)) {
 			//自キャラの衝突時コールバックを呼び出す
-			player_->OnCollision(enemy);
-			enemy->OnCollision(player_);
+			player_->OnCollision(true);
+			deathParticles_->SetStartPos(player_->GetWorldPosition());
+			deathParticles_->SetIsStart(true);
+			break;
 		}
+
 	}
 	#pragma endregion
 }

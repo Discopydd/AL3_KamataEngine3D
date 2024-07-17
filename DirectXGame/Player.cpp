@@ -15,11 +15,13 @@ AABB Player::GetAABB()
 	return aabb;
 }
 
-void Player::OnCollision(const Enemy* enemy)
+void Player::OnCollision(const bool flag)
 {
-    (void)enemy;
-
-    velocity_.y += 1.0f;
+   isEnemyHit = flag;
+    if (flag) {
+        isDead = true;
+        velocity_ = {0, 0, 0};
+    }
 }
 
 Player::~Player() {}
@@ -34,6 +36,9 @@ void Player::Initialize(ViewProjection*viewProjection, const Vector3& position)
 }
 
 void Player::Update() {
+    	if (isDead) {
+		return;
+	}
     #pragma region 1.移動入力
     // 右キーまたは左キーが押されたかどうかをチェックする
     if (Input::GetInstance()->PushKey(DIK_RIGHT) || Input::GetInstance()->PushKey(DIK_LEFT)) {
@@ -133,6 +138,8 @@ void Player::Update() {
 
 void Player::Draw()
 {
+	if (isDead)
+		return;
 	model_->Draw(worldTransform_, *viewProjection_);
 }
 

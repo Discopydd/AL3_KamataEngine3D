@@ -34,6 +34,8 @@ private:
 
 	bool onGround_ = true;
 	bool isJump_ = false;
+	bool isEnemyHit = false;
+	bool isDead = false;
 
 	const float kGravityAcceleration_ = 0.05f;
 	const float kLimitFallSpeed_ = 0.4f;
@@ -79,8 +81,7 @@ private:
 
 	void MapCollision_isGroundChange(const CollisionMapInfo& info);
 
-	//ワールド座標を取得
-	Vector3 GetWorldPosition();
+
 
 
 	public: 
@@ -110,5 +111,11 @@ private:
 	AABB GetAABB();
 
 	//衝突応答
-	void OnCollision(const Enemy* enemy);
+	void OnCollision(const bool flag);
+
+	//ワールド座標を取得
+	Vector3 GetWorldPosition();
+
+	void SetDead(bool dead) { isDead = dead; }
+	bool GetDead() const { return isDead; }
 };
