@@ -14,6 +14,7 @@ enum class Scene {
 	kLoading,
 	kTitle,
 	kGame,
+	kClear,
 };
 Scene scene = Scene::kUnknown;
 
@@ -151,6 +152,30 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (gameScene->isSceneOver)
 				scene = Scene::kLoading;
 			break;
+			case Scene::kClear:
+    // ImGui 接收输入
+    imguiManager->Begin();
+    input->Update();
+
+    // 显示通关页面的逻辑
+    // 可以使用 ImGui 显示简单的通关信息
+    ImGui::Begin("Clear");
+    ImGui::Text("Congratulations! You have cleared the game.");
+    ImGui::Text("Press SPACE to return to the title screen.");
+    ImGui::End();
+
+    imguiManager->End();
+
+    // 开始绘制
+    dxCommon->PreDraw();
+    // 结束绘制
+    dxCommon->PostDraw();
+
+    // 按下空格键返回标题界面
+    if (Input::GetInstance()->PushKey(DIK_SPACE)) {
+        scene = Scene::kTitle;
+    }
+    break;
 		}
 	}
 

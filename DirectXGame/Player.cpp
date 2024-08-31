@@ -39,6 +39,17 @@ void Player::Update() {
     	if (isDead) {
 		return;
 	}
+
+    const float groundY = mapChipField_->GetMapChipPositionByIndex(0, mapChipField_->kNumBlockVirtical - 1).y;
+    if (worldTransform_.translation_.y < groundY) {
+        isDead = true;
+        velocity_ = {0, 0, 0}; // 停止所有运动
+        
+
+        
+        return; // 确保不再执行后续逻辑
+    }
+
     #pragma region 1.移動入力
     // 右キーまたは左キーが押されたかどうかをチェックする
     if (Input::GetInstance()->PushKey(DIK_RIGHT) || Input::GetInstance()->PushKey(DIK_LEFT)) {
@@ -99,6 +110,8 @@ void Player::Update() {
         }
     } else {
     }
+   
+
     #pragma endregion
 
     // 2.移動量を加味して衝突判定する

@@ -17,9 +17,11 @@
 #include "Enemy.h"
 #include <imgui.h>
 #include "DeathParticles.h"
+#include <main.cpp>
 /// <summary>
 /// ゲームシーン
 /// </summary>
+extern Scene scene; 
 class GameScene {
 
 public: // メンバ関数
@@ -74,6 +76,7 @@ private: // メンバ変数
 	int32_t enemyCount = 1;
 	//Map
 	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
+	 std::vector<WorldTransform*> items_;
 	MapChipField* mapChipField_;
 	void GenerateBlocks();
 	// CameraController

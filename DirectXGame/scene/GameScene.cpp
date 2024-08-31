@@ -16,6 +16,11 @@ for (uint32_t i = 0; i < kNumBlockVertical; i++) {
 				worldTransformBlocks_[i][j]->Initialize();
 				worldTransformBlocks_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
 				break;
+			 case MapChipType::kItem:
+                WorldTransform* itemTransform = new WorldTransform();
+                itemTransform->Initialize();
+                itemTransform->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
+                break;
 			}
 		}
 	}
@@ -116,6 +121,7 @@ void GameScene::Update() {
 	// Obj
 	skydomeObj_->Update();
 	player_->Update();
+
 	// パーティクルの更新
 	if (deathParticles_) {
 		deathParticles_->Update();
@@ -161,6 +167,11 @@ void GameScene::Draw() {
 			model_->Draw(*worldTransformBlock, viewProjection_);
 		}
 	}
+	   for (WorldTransform* item : items_) {
+        if (item) {
+            model_->Draw(*item, viewProjection_);
+        }
+    }
 	skydomeObj_->Draw();
 	player_->Draw();
 	 for (Enemy* enemy : enemies_) {
@@ -193,6 +204,7 @@ void GameScene::CheckAllCollisions()
 { if (player_->GetDead()) {
         return; 
     }
+  const float groundY = mapChipField_->GetMapChipPositionByIndex(0, mapChipField_->kNumBlockVirtical - 1).y;
 	#pragma region 自キャラと敵キャラの当たり判定
 	//判定対象1と2の座標
 	AABB aabb1,aabb2;
@@ -211,5 +223,31 @@ void GameScene::CheckAllCollisions()
 		}
 
 	}
+	if (player_->GetWorldPosition().y < groundY) {
+
+	deathParticles_->SetStartPos(player_->GetWorldPosition());
+			deathParticles_->SetIsStart(true);
+
+	}
+	   AABB playerAABB = player_->GetAABB();
+    for (auto it = items_.begin(); it != items_.end();) {
+        AABB itemAABB;
+        itemAABB.min = (*it)->translation_ - Vector3(1, 1, 1); 
+        itemAABB.max = (*it)->translation_ + Vector3(1, 1, 1);
+
+        if (IsCollision(playerAABB, itemAABB)) {
+            // 玩家拾取了物品
+            delete *it;
+            it = items_.erase(it); // 移除物品
+        } else {
+            ++it;
+        }
+    }
+
+    // 判断所有物品是否被拾取
+    if (items_.empty()) {
+        isSceneOver = true;
+        scene = Scene::kClear; // 切换到通关场景
+    }
 	#pragma endregion
 }
