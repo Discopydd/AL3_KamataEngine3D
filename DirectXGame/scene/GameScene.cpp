@@ -16,14 +16,29 @@ for (uint32_t i = 0; i < kNumBlockVertical; i++) {
 				worldTransformBlocks_[i][j]->Initialize();
 				worldTransformBlocks_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
 				break;
-			 case MapChipType::kItem:
-                WorldTransform* itemTransform = new WorldTransform();
-                itemTransform->Initialize();
-                itemTransform->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
-                break;
 			}
 		}
 	}
+}
+void GameScene::GenerateEnemies()
+{
+	  const uint32_t minX = 10;      
+    const uint32_t maxX = 120;   
+    const uint32_t minY = 2;    
+    const uint32_t maxY = 18;    
+    for (int i = 0; i < enemyCount; ++i) {
+
+        uint32_t randomX = minX + (std::rand() % (maxX - minX + 1)); 
+        uint32_t randomY = minY + (std::rand() % (maxY - minY + 1));
+
+        Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(randomX, randomY);
+
+        // 创建敌人对象并初始化
+        Enemy* newEnemy = new Enemy();
+        newEnemy->Initialize(&viewProjection_, enemyPosition);
+
+        enemies_.push_back(newEnemy);
+    }
 }
 GameScene::GameScene() {}
 
@@ -48,7 +63,7 @@ GameScene::~GameScene() {
 }
 
 void GameScene::Initialize() {
-
+	std::srand(static_cast<unsigned int>(std::time(nullptr))); 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
@@ -71,12 +86,7 @@ void GameScene::Initialize() {
 	 player_->SetMapChipField(mapChipField_);
 
 	 //敵
-	for (int32_t i = 0; i < enemyCount; ++i) {
-    Enemy* newEnemy = new Enemy();
-    Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(10, 18-i);
-    newEnemy->Initialize(&viewProjection_, enemyPosition);
-    enemies_.push_back(newEnemy);
-}
+GenerateEnemies();
 	// Particles
 	deathParticles_ = new DeathParticles();
 	deathParticles_->Initalize(&viewProjection_);
@@ -167,11 +177,6 @@ void GameScene::Draw() {
 			model_->Draw(*worldTransformBlock, viewProjection_);
 		}
 	}
-	   for (WorldTransform* item : items_) {
-        if (item) {
-            model_->Draw(*item, viewProjection_);
-        }
-    }
 	skydomeObj_->Draw();
 	player_->Draw();
 	 for (Enemy* enemy : enemies_) {
@@ -229,25 +234,6 @@ void GameScene::CheckAllCollisions()
 			deathParticles_->SetIsStart(true);
 
 	}
-	   AABB playerAABB = player_->GetAABB();
-    for (auto it = items_.begin(); it != items_.end();) {
-        AABB itemAABB;
-        itemAABB.min = (*it)->translation_ - Vector3(1, 1, 1); 
-        itemAABB.max = (*it)->translation_ + Vector3(1, 1, 1);
 
-        if (IsCollision(playerAABB, itemAABB)) {
-            // 玩家拾取了物品
-            delete *it;
-            it = items_.erase(it); // 移除物品
-        } else {
-            ++it;
-        }
-    }
-
-    // 判断所有物品是否被拾取
-    if (items_.empty()) {
-        isSceneOver = true;
-        scene = Scene::kClear; // 切换到通关场景
-    }
 	#pragma endregion
 }

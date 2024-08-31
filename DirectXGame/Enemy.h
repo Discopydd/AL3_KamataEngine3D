@@ -4,6 +4,7 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "MyMath.h"
+#include <random>
 /// <summary>
 /// 敵
 /// </summary>
@@ -34,6 +35,9 @@ private:
 
 	ViewProjection* viewProjection_ = nullptr;
 
+	 float minX_;  
+    float maxX_;
+
 public:
 
 	void Initialize(ViewProjection* viewProjection, const Vector3& position);
@@ -50,5 +54,7 @@ public:
 
 	//衝突応答
 	void OnCollision(const bool flag);
+
+	void SetRandomVelocity(float minSpeed, float maxSpeed);
 
 };

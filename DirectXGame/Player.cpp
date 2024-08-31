@@ -141,11 +141,6 @@ void Player::Update() {
 
     // 8.ワールド変換行列を更新する
     worldTransform_.UpdateMatrix();
-
-    ImGui::Begin("A");
-	ImGui::SliderFloat3("velocity", &velocity_.x, 0.0f, 1.0f);
-	ImGui::Checkbox("onGround_", &onGround_);
-	ImGui::End();
 }
 
 

@@ -7,15 +7,9 @@
 #include "TextureManager.h"
 #include "TitleScene.h"
 #include "WinApp.h"
+#include "Sence.h" 
 
 
-enum class Scene {
-	kUnknown = 0,
-	kLoading,
-	kTitle,
-	kGame,
-	kClear,
-};
 Scene scene = Scene::kUnknown;
 
 // Windowsアプリでのエントリーポイント(main関数)

@@ -2,6 +2,7 @@
 TitleScene::~TitleScene() {
 	delete modelTitle_;
 	delete modelPlayer_;
+	delete sprite_;
 }
 
 void TitleScene::Initalize() {
@@ -9,14 +10,19 @@ void TitleScene::Initalize() {
 	viewProjection_.Initialize();
 	worldTransform_title.Initialize();
 	worldTransform_player.Initialize();
+	
 	modelTitle_ = Model::CreateFromOBJ("Title", true);
 	modelPlayer_ = Model::CreateFromOBJ("Player", true);
+	textureHandle_ = TextureManager::Load("back.png");
 
+	sprite_ = Sprite::Create(textureHandle_, { 0,0 });
 	worldTransform_title.translation_ = {-20, 5, 0};
 	worldTransform_title.scale_ = {10, 10, 10};
 	worldTransform_player.translation_ = {0, -10, 0};
 	worldTransform_player.scale_ = {3, 3, 3};
 	worldTransform_player.rotation_ = {0, 1, 0.5f};
+
+
 }
 
 void TitleScene::Update() {
@@ -46,6 +52,8 @@ void TitleScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
+
+	sprite_->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

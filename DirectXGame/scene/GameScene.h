@@ -17,7 +17,9 @@
 #include "Enemy.h"
 #include <imgui.h>
 #include "DeathParticles.h"
-#include <main.cpp>
+#include "Sence.h" 
+#include <cstdlib> 
+#include <ctime>    
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -73,10 +75,10 @@ private: // メンバ変数
 	Player* player_ = nullptr;
 	//敵
 	std::list<Enemy*>enemies_;
-	int32_t enemyCount = 1;
+	int32_t enemyCount = 10;
+	 void GenerateEnemies(); 
 	//Map
 	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
-	 std::vector<WorldTransform*> items_;
 	MapChipField* mapChipField_;
 	void GenerateBlocks();
 	// CameraController

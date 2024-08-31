@@ -6,7 +6,7 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-
+#include "TextureManager.h"
 class TitleScene {
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -22,6 +22,8 @@ private: // メンバ変数
 	float titleSpeed_ = 0.03f;
 	float titleMoveTime_ = 1.5f;
 	float currentTime_ = 0;
+	uint32_t textureHandle_ = 0;
+	Sprite* sprite_ = nullptr;
 
 public:
 	~TitleScene();

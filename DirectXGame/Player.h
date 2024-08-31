@@ -20,7 +20,7 @@ private:
 	Vector3 velocity_{};
 	const float kAcceleration = 0.1f;
 	const float kAttenuation = 0.2f;   // 速度減衰
-	const float kLimitRunSpeed = 0.4f; // 最大速度
+	const float kLimitRunSpeed = 0.3f; // 最大速度
 
 	enum class LRDirection {
 		kRight,//右
