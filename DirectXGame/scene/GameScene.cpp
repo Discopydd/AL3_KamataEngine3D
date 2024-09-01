@@ -90,7 +90,10 @@ GenerateEnemies();
 	// Particles
 	deathParticles_ = new DeathParticles();
 	deathParticles_->Initalize(&viewProjection_);
-
+	 // 初始化木门
+    door_ = new Door();
+    Vector3 doorPosition = mapChipField_->GetMapChipPositionByIndex(92, 6); // 假设位置 (50, 10)
+    door_->Initialize(&viewProjection_,doorPosition);
 	  // CameraControll
 	cameraController_ = new CameraController;
 	cameraController_->Initialize();
@@ -131,7 +134,7 @@ void GameScene::Update() {
 	// Obj
 	skydomeObj_->Update();
 	player_->Update();
-
+	door_->Update();
 	// パーティクルの更新
 	if (deathParticles_) {
 		deathParticles_->Update();
@@ -182,6 +185,7 @@ void GameScene::Draw() {
 	 for (Enemy* enemy : enemies_) {
         enemy->Draw();
     }
+	 door_->Draw();
 	 //パーティクル描画
 	if (deathParticles_) {
 		deathParticles_->Draw();
@@ -234,6 +238,15 @@ void GameScene::CheckAllCollisions()
 			deathParticles_->SetIsStart(true);
 
 	}
+	 AABB playerAABB = player_->GetAABB();
+    AABB doorAABB;
+    doorAABB.min = door_->GetWorldTransform().translation_ - Vector3(1, 0, 1); 
+    doorAABB.max = door_->GetWorldTransform().translation_ + Vector3(1, 2, 1);
+
+    if (IsCollision(playerAABB, doorAABB)) {
+        // 玩家碰到木门，设置通关
+        scene = Scene::kLoading;
+    }
 
 	#pragma endregion
 }

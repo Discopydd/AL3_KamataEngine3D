@@ -15,11 +15,11 @@
 #include "CameraController.h"
 #include "Skydome.h"
 #include "Enemy.h"
-#include <imgui.h>
 #include "DeathParticles.h"
 #include "Sence.h" 
 #include <cstdlib> 
 #include <ctime>    
+#include "Door.h"
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -86,6 +86,8 @@ private: // メンバ変数
 
 	// Particles
 	DeathParticles* deathParticles_ = nullptr;
+
+	 Door* door_ = nullptr;
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
