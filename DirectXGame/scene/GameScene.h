@@ -1,13 +1,21 @@
 #pragma once
-
+#include "TextureManager.h"
+#include <cassert>
 #include "Audio.h"
+#include "DebugCamera.h"
 #include "DirectXCommon.h"
 #include "Input.h"
 #include "Model.h"
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-
+#include <vector>
+#include"Player.h"
+#include"MapChipField.h"
+#include "CameraController.h"
+#include "Skydome.h"
+#include "Enemy.h"
+#include <imgui.h>
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -39,10 +47,33 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+    //全ての当たり判定を行う
+	void CheckAllCollisions();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
+
+	// 自分の変数
+	ViewProjection viewProjection_;
+	Model* model_ = nullptr;
+	//DebugCamera
+	bool isDebugCameraActrive_ = false;
+	DebugCamera* debugCamera_ = nullptr;
+	// Skydome
+	Skydome* skydomeObj_ = nullptr;
+	// Player
+	Player* player_ = nullptr;
+	//敵
+	std::list<Enemy*>enemies_;
+	int32_t enemyCount = 1;
+	//Map
+	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
+	MapChipField* mapChipField_;
+	void GenerateBlocks();
+	// CameraController
+	CameraController* cameraController_ = nullptr; 
 
 	/// <summary>
 	/// ゲームシーン用
