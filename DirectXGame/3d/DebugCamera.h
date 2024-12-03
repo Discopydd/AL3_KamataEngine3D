@@ -33,7 +33,7 @@ public:
 	void SetAspectRatio(float value) { viewProjection_.aspectRatio = value; }
 	void SetNearZ(float value) { viewProjection_.nearZ = value; }
 	void SetFarZ(float value) { viewProjection_.farZ = value; }
-
+	
 private:
 	// 入力クラスのポインタ
 	Input* input_;
@@ -44,9 +44,7 @@ private:
 	ViewProjection viewProjection_;
 	// 回転行列
 	Matrix4x4 matRot_;
-
 	/// <summary>
 	/// 行列更新
 	/// </summary>
-	void UpdateMatrix();
 };
